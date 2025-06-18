@@ -1,0 +1,333 @@
+# Configuration for Phase 3 Adaptive Learning System
+
+# Pipeline Configuration
+pipeline:
+  # Core settings - CONSERVATIVE VALUES to prevent quality degradation
+  feedback_buffer_size: 1000
+  feedback_flush_interval: 60  # seconds - increased for stability
+  learning_rate: 0.005  # REDUCED from 0.01 to prevent over-adaptation
+  adaptation_rate: 0.05  # REDUCED from 0.1 to be more conservative
+  
+  # Component settings
+  event_workers: 5
+  sync_interval: 300  # seconds
+  batch_size: 10000
+  
+  # Quality validation settings
+  min_quality_threshold: 0.35  # Minimum NDCG@10 to maintain
+  quality_validation_window: 100  # Number of recommendations to validate
+  rollback_on_quality_drop: true  # Auto-rollback if quality drops
+
+# Online Learning Configuration
+online_learning:
+  algorithm: "ensemble"  # incremental, ensemble, bandit
+  ensemble_size: 5
+  learning_rate_decay: 0.98  # INCREASED from 0.95 for more conservative decay
+  min_learning_rate: 0.0005  # REDUCED minimum learning rate
+  regularization: 0.02  # INCREASED regularization to prevent overfitting
+  
+  # Conservative update settings
+  max_updates_per_batch: 50  # Limit updates to prevent over-adaptation
+  update_validation: true  # Validate each update
+  
+  # Bandit settings (for bandit algorithm)
+  num_arms: 10
+  exploration_rate: 0.05  # REDUCED exploration to be more conservative
+  confidence_bound: 1.96
+
+# Drift Detection Configuration - LESS SENSITIVE
+drift_detection:
+  method: "ensemble"  # adwin, page_hinkley, ks_test, ensemble
+  sensitivity: 0.6  # REDUCED from 0.8 to be less sensitive
+  window_size: 1500  # INCREASED window size for more stable detection
+  min_instances: 50  # INCREASED minimum instances
+  
+  # Quality-aware drift detection
+  quality_aware: true
+  min_quality_drop: 0.05  # Only trigger if quality drops by 5%
+  
+  # Method-specific settings - MORE CONSERVATIVE
+  adwin:
+    delta: 0.001  # REDUCED from 0.002 for less sensitivity
+    clock: 64  # INCREASED for more stability
+  
+  page_hinkley:
+    min_instances: 50  # INCREASED
+    delta: 0.002  # REDUCED from 0.005
+    threshold: 75  # INCREASED threshold
+    alpha: 1 - 0.00005  # MORE conservative
+  
+  ks_test:
+    alpha: 0.01  # REDUCED from 0.05 for higher confidence
+    alternative: "two-sided"
+
+# Adaptation Configuration
+adaptation:
+  strategy: "gradual"  # gradual, rapid, rollback
+  min_confidence: 0.6
+  max_adaptations_per_hour: 5
+  rollback_threshold: 0.3
+  
+  # Strategy-specific settings
+  gradual:
+    step_size: 0.1
+    max_steps: 10
+  
+  rapid:
+    adaptation_factor: 0.5
+    validation_required: true
+
+# Streaming Configuration
+streaming:
+  # Stream type: kafka, redis, websocket
+  stream_type: "kafka"
+  
+  # Kafka settings
+  kafka:
+    bootstrap_servers: ["localhost:9092"]
+    topics:
+      - "user_interactions"
+      - "feedback_events"
+      - "preference_updates"
+    consumer_group: "adaptive_learning"
+    auto_offset_reset: "latest"
+    max_poll_records: 1000
+  
+  # Redis settings
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    streams:
+      - "user_stream"
+      - "feedback_stream"
+    consumer_group: "adaptive_learning"
+  
+  # WebSocket settings
+  websocket:
+    port: 8080
+    max_connections: 1000
+
+# Preference Modeling Configuration
+preference_modeling:
+  time_decay: 0.95
+  update_threshold: 0.1
+  min_interactions: 10
+  
+  # Evolution modeling
+  trend_window: 7  # days
+  seasonality_periods: [7, 30, 365]  # weekly, monthly, yearly
+  min_trend_significance: 0.05
+  
+  # Confidence scoring
+  min_confidence: 0.1
+  max_confidence: 0.95
+  uncertainty_penalty: 0.1
+
+# Explanation Configuration
+explanation:
+  # Adaptation explanations
+  max_explanation_length: 500
+  include_technical_details: false
+  explanation_templates:
+    drift_detected: "We noticed changes in your preferences and adjusted recommendations accordingly."
+    adaptation_applied: "Your recommendation model has been updated based on recent activity."
+    rollback_performed: "We've reverted to a previous model version due to performance issues."
+  
+  # Gemini API settings
+  gemini:
+    api_key: ${GEMINI_API_KEY}
+    model: "gemini-pro"
+    max_tokens: 150
+    temperature: 0.3
+    timeout: 10  # seconds
+  
+  # Visualization settings
+  visualization:
+    chart_width: 800
+    chart_height: 600
+    color_scheme: "viridis"
+    max_categories: 10
+
+# User Control Configuration
+user_control:
+  # Default control settings
+  default_control_level: "moderate"  # minimal, moderate, full
+  auto_adapt_default: true
+  notify_adaptations_default: false
+  
+  # Control constraints
+  max_blocked_categories: 10
+  novelty_range: [0.0, 1.0]
+  diversity_constraints:
+    max_same_category: 3
+    min_categories: 2
+  
+  # Adaptation policies
+  policies:
+    conservative:
+      auto_adapt: false
+      drift_threshold: 0.9
+      adaptation_delay: 3600  # seconds
+    
+    moderate:
+      auto_adapt: true
+      drift_threshold: 0.7
+      adaptation_delay: 300
+    
+    aggressive:
+      auto_adapt: true
+      drift_threshold: 0.5
+      adaptation_delay: 60
+
+# Monitoring Configuration
+monitoring:
+  # Dashboard settings
+  update_interval: 60  # seconds
+  metrics_retention: 86400  # 24 hours in seconds
+  alert_thresholds:
+    component_health: 0.8
+    queue_size_warning: 5000
+    queue_size_critical: 10000
+    drift_accuracy_warning: 0.7
+    false_positive_rate_warning: 0.2
+  
+  # Performance monitoring
+  track_latency: true
+  track_throughput: true
+  track_accuracy: true
+  
+  # Alerting
+  enable_alerts: true
+  alert_channels: ["log", "email"]  # log, email, slack, webhook
+  
+  # Email settings (if enabled)
+  email:
+    smtp_server: "localhost"
+    smtp_port: 587
+    sender: "adaptive-learning@example.com"
+    recipients: ["admin@example.com"]
+
+# Database Configuration
+database:
+  # Main database
+  url: "sqlite:///data/recommendation_engine.db"
+  
+  # Connection settings
+  pool_size: 10
+  pool_recycle: 3600
+  pool_timeout: 30
+  max_overflow: 20
+  
+  # Tables
+  tables:
+    feedback: "user_feedback"
+    preferences: "user_preferences"
+    adaptations: "adaptation_history"
+    drift_events: "drift_detections"
+    user_control: "user_control_settings"
+
+# Caching Configuration
+caching:
+  # Cache backend: memory, redis
+  backend: "redis"
+  
+  # TTL settings (seconds)
+  user_preferences_ttl: 3600
+  model_predictions_ttl: 300
+  drift_scores_ttl: 600
+  explanations_ttl: 1800
+  
+  # Redis cache settings (if backend is redis)
+  redis_cache:
+    host: "localhost"
+    port: 6379
+    db: 1
+    max_connections: 50
+
+# Security Configuration
+security:
+  # API security
+  enable_authentication: true
+  api_key_header: "X-API-Key"
+  rate_limiting:
+    requests_per_minute: 1000
+    burst_size: 100
+  
+  # Data privacy
+  anonymize_user_ids: false
+  data_retention_days: 365
+  encrypt_sensitive_data: true
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Log files
+  files:
+    main: "logs/adaptive_learning.log"
+    errors: "logs/errors.log"
+    performance: "logs/performance.log"
+    audit: "logs/audit.log"
+  
+  # Log rotation
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+  
+  # External logging
+  enable_structured_logging: true
+  log_to_stdout: true
+
+# Feature Flags
+features:
+  enable_gemini_explanations: true
+  enable_visualization_generation: true
+  enable_real_time_adaptation: true
+  enable_cross_domain_transfer: false
+  enable_federated_learning: false
+  enable_privacy_preserving_learning: false
+
+# Development/Testing Configuration
+development:
+  debug_mode: false
+  mock_external_services: false
+  simulate_drift: false
+  test_data_size: 1000
+  
+  # Testing settings
+  pytest_markers: ["unit", "integration", "performance"]
+  test_timeout: 300  # seconds
+  
+# Environment-specific overrides
+environments:
+  development:
+    logging:
+      level: "DEBUG"
+    database:
+      url: "sqlite:///data/test_recommendation_engine.db"
+    features:
+      enable_real_time_adaptation: false
+  
+  testing:
+    streaming:
+      stream_type: "mock"
+    database:
+      url: "sqlite:///:memory:"
+    caching:
+      backend: "memory"
+    monitoring:
+      enable_alerts: false
+  
+  production:
+    logging:
+      level: "WARNING"
+    database:
+      url: ${DATABASE_URL}
+    streaming:
+      kafka:
+        bootstrap_servers: ${KAFKA_SERVERS}
+    security:
+      enable_authentication: true
+    monitoring:
+      enable_alerts: true

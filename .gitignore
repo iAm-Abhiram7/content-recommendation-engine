@@ -1,0 +1,115 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment Variables
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Data files (large datasets)
+data/ml-20m/
+data/ml-25m/
+data/netflix/
+data/*.zip
+data/archive.zip
+
+# Models (can be large)
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.pt
+
+# Cache
+cache/
+.cache/
+*.cache
+
+# Output files
+output/
+*.json
+*.csv
+results/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Redis dumps
+dump.rdb
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Exclude some specific files that look like artifacts
+-H
+-d
+=1.11.2
+AI_ML-Exercise*.docx
+*test_results.json
+*simple_fix*.json

@@ -1,0 +1,123 @@
+api:
+  cache_ttl_seconds: 300
+  debug: false
+  host: 0.0.0.0
+  max_cache_size: 1000
+  port: 8000
+  rate_limit_burst: 10
+  rate_limit_per_minute: 60
+  recommendation_timeout_seconds: 10
+  reload: false
+  request_timeout_seconds: 30
+collaborative:
+  cold_start_method: popularity
+  mf_factors: 50
+  mf_iterations: 100
+  mf_learning_rate: 0.01
+  mf_regularization: 0.01
+  mf_use_bias: true
+  min_common_items: 5
+  min_interactions_item: 3
+  min_interactions_user: 5
+  neighborhood_size: 50
+  similarity_metric: cosine
+content_based:
+  actor_weight: 0.2
+  description_weight: 0.1
+  director_weight: 0.2
+  diversity_lambda: 0.1
+  domain_similarity_threshold: 0.6
+  embedding_cache_size: 10000
+  embedding_dim: 384
+  embedding_model: all-MiniLM-L6-v2
+  enable_cross_domain: true
+  genre_weight: 0.4
+  max_same_genre: 3
+  use_gemini_embeddings: true
+  year_weight: 0.1
+database:
+  cache_size_mb: 100
+  enable_wal_mode: true
+  max_overflow: 10
+  pool_size: 5
+  pool_timeout: 30
+  sqlite_path: data/recommendation_engine.db
+  sqlite_timeout: 30
+debug: true
+elasticsearch_url: null
+enable_cross_domain: true
+enable_explanations: true
+enable_group_recommendations: true
+enable_multi_language: true
+enable_profiling: false
+enable_real_time_updates: true
+environment: development
+experiment:
+  default_variant: control
+  enable_ab_testing: false
+  enable_metrics_collection: true
+  enable_mlflow: false
+  experiment_config_path: config/experiments.json
+  metrics_retention_days: 30
+  mlflow_tracking_uri: sqlite:///mlruns.db
+gemini_api_key: null
+gemini_model: gemini-pro
+group_recommendation:
+  default_aggregation: average
+  enable_fairness_constraint: true
+  fairness_threshold: 0.1
+  group_preference_weight: 0.7
+  max_group_size: 10
+  min_group_agreement: 0.3
+hybrid:
+  auto_tune_weights: true
+  collaborative_weight: 0.4
+  content_weight: 0.3
+  diversity_weight: 0.2
+  enable_diversity_rerank: true
+  enable_explanations: true
+  ensemble_method: weighted
+  explanation_method: feature_importance
+  knowledge_weight: 0.3
+  novelty_weight: 0.1
+  tuning_frequency_days: 7
+knowledge_based:
+  context_boost_factor: 1.5
+  enable_mood_context: true
+  enable_time_context: true
+  min_rating_count: 5
+  quality_threshold: 3.5
+  recency_bonus_months: 6
+  trending_decay_factor: 0.9
+  trending_min_interactions: 10
+  trending_window_days: 7
+logging:
+  backup_count: 5
+  enable_structured: true
+  error_file: errors.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+  log_dir: logs
+  log_file: app.log
+  max_file_size_mb: 10
+  structured_file: structured.log
+max_recommendations: 100
+personalization:
+  drift_detection_window_days: 30
+  drift_threshold: 0.3
+  enable_drift_detection: true
+  enable_sequential_mining: true
+  long_term_window_days: 180
+  max_sequence_length: 10
+  min_sequence_support: 0.1
+  preference_stability_threshold: 0.1
+  profile_update_frequency_days: 1
+  recency_decay_factor: 0.8
+  session_timeout_minutes: 30
+  short_term_window_days: 7
+redis_url: "redis://localhost:6379/0"
+supported_content_types:
+- movie
+- book
+- music
+- tv_show
