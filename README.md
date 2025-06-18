@@ -44,6 +44,46 @@ python api_server.py
 # API Docs: http://localhost:8000/docs
 ```
 
+## 🎯 Quick Validation (For Reviewers)
+
+### **30-Second Project Verification**
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Verify system setup
+python verify_redis.py
+
+# 3. Run core tests (< 60 seconds)
+python test_setup.py
+python test_integration_simple.py
+
+# 4. Launch demo interface
+python launch_streamlit_fixed.py
+# Visit: http://localhost:8501
+```
+
+### **Full Test Suite (5 minutes)**
+```bash
+# Complete testing pipeline
+python test_all_phases.py          # Comprehensive system tests
+python test_all_endpoints.py       # API performance tests
+python test_integration_phase4.py  # End-to-end validation
+
+# Generate test coverage report
+python -m pytest tests/ --cov=src --cov-report=html
+# View: htmlcov/index.html
+```
+
+### **Performance Benchmarks**
+```bash
+# Load testing (optional - requires more time)
+python production_deploy.py --benchmark
+
+# Redis performance verification
+python test_redis_setup.py
+```
+
 ## ✨ Core Features
 
 ### **🤖 Hybrid Recommendation Engine**
@@ -232,4 +272,3 @@ docker-compose up --scale api=3 --scale redis=2
 ---
 
 *This project showcases end-to-end ML engineering capabilities from research to production deployment, demonstrating expertise in recommendation systems, real-time ML, and scalable system design.*
-````
